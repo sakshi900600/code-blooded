@@ -1,32 +1,127 @@
+:root {
+  --primary-color: #a18cd1;
+  --secondary-color: #fbc2eb;
+  --text-color: #2d2d2d;
+  --bg-light: #faf8ff;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  min-height: 100vh;
+}
+
 .admin-dashboard {
-  padding: 30px;
-  font-family: Arial;
+  background-color: var(--bg-light);
+  margin: 3rem auto;
+  padding: 2rem;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 1000px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(6px);
+}
+
+h1, h2 {
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
 }
 
 .admin-tabs {
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 .admin-tabs button {
-  margin-right: 10px;
-  padding: 10px;
-  background-color: #ddd;
+  padding: 0.75rem 1.5rem;
   border: none;
+  border-radius: 25px;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  color: white;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(161, 140, 209, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.admin-tabs button:hover {
+  transform: scale(1.05);
 }
 
 .admin-content {
-  border-top: 1px solid #ccc;
-  padding-top: 20px;
+  background-color: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
+  border-collapse: separate;
+  border-spacing: 0 10px;
 }
 
-table th, table td {
+table th {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 8px 8px 0 0;
+}
+
+table td {
+  background-color: #f3efff;
+  padding: 0.75rem;
+  text-align: center;
+  color: var(--text-color);
+  border-bottom: 4px solid transparent;
+  border-radius: 0 0 8px 8px;
+}
+
+table tr {
+  transition: all 0.2s ease;
+}
+
+table tr:hover {
+  transform: scale(1.01);
+  background-color: #ede6ff;
+}
+
+input {
+  padding: 0.5rem;
+  width: 250px;
+  border-radius: 10px;
   border: 1px solid #ccc;
-  padding: 10px;
+  margin-right: 10px;
+}
+
+button {
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 1rem;
+}
+
+ul li {
+  background-color: #f3efff;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+ul li button {
+  background-color: #ff6b81;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 8px;
 }
