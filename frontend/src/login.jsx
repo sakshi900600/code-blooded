@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./LoginPage.css"; // We'll style it separately
+import "./Login.css"; // We'll style it separately
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
