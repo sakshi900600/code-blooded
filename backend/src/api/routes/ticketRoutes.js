@@ -7,7 +7,9 @@ const {
   getTicket,
   getAllTickets,
   updateTicket,
-  addComment, // Add this new controller function
+  addComment,
+  upvoteTicket, // Add this new controller function
+  downvoteTicket, // Add this new controller function
 } = require('../controllers/ticketController');
 const { protect, agent } = require('../middlewares/authMiddleware');
 
@@ -40,5 +42,15 @@ router.put('/:id', protect, agent, updateTicket);
 // @route   POST /api/tickets/:id/comments
 // @access  Private
 router.post('/:id/comments', protect, addComment);
+
+// @desc    Upvote a ticket
+// @route   PUT /api/tickets/:id/upvote
+// @access  Private
+router.put('/:id/upvote', protect, upvoteTicket);
+
+// @desc    Downvote a ticket
+// @route   PUT /api/tickets/:id/downvote
+// @access  Private
+router.put('/:id/downvote', protect, downvoteTicket);
 
 module.exports = router;

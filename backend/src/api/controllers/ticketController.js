@@ -179,7 +179,7 @@ const addComment = async (req, res) => {
     if (!ticket) {
       return res.status(404).json({ msg: 'Ticket not found' });
     }
-    
+
     // Check if the user is authorized to comment on this ticket (owner, agent, or admin)
     if (
       ticket.user.toString() !== req.user.id &&
@@ -203,4 +203,61 @@ const addComment = async (req, res) => {
   }
 };
 
-module.exports = { createTicket, getTickets, getTicket, getAllTickets, updateTicket, addComment };
+// @desc    Upvote a ticket
+// @route   PUT /api/tickets/:id/upvote
+// @access  Private
+const upvoteTicket = async (req, res) => {
+  try {
+    const ticket = await Ticket.findById(req.params.id);
+
+    if (!ticket) {
+      return res.status(404).json({ msg: 'Ticket not found' });
+    }
+
+    ticket.upvotes += 1;
+    await ticket.save();
+
+    res.json({
+      upvotes: ticket.upvotes,
+      downvotes: ticket.downvotes,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+};
+
+// @desc    Downvote a ticket
+// @route   PUT /api/tickets/:id/downvote
+// @access  Private
+const downvoteTicket = async (req, res) => {
+  try {
+    const ticket = await Ticket.findById(req.params.id);
+
+    if (!ticket) {
+      return res.status(404).json({ msg: 'Ticket not found' });
+    }
+
+    ticket.downvotes += 1;
+    await ticket.save();
+
+    res.json({
+      upvotes: ticket.upvotes,
+      downvotes: ticket.downvotes,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+};
+
+module.exports = {
+  createTicket,
+  getTickets,
+  getTicket,
+  getAllTickets,
+  updateTicket,
+  addComment,
+  upvoteTicket,
+  downvoteTicket,
+};
