@@ -6,7 +6,8 @@ const {
   getTickets,
   getTicket,
   getAllTickets,
-  updateTicket, 
+  updateTicket,
+  addComment, // Add this new controller function
 } = require('../controllers/ticketController');
 const { protect, agent } = require('../middlewares/authMiddleware');
 
@@ -30,10 +31,14 @@ router.get('/all', protect, agent, getAllTickets);
 // @access  Private
 router.get('/:id', protect, getTicket);
 
-
 // @desc    Update a ticket (for agents/admins)
 // @route   PUT /api/tickets/:id
 // @access  Private/Agent
 router.put('/:id', protect, agent, updateTicket);
+
+// @desc    Add a comment to a ticket
+// @route   POST /api/tickets/:id/comments
+// @access  Private
+router.post('/:id/comments', protect, addComment);
 
 module.exports = router;

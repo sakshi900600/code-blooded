@@ -34,8 +34,28 @@ const createTicket = async (req, res) => {
 // @route   GET /api/tickets
 // @access  Private
 const getTickets = async (req, res) => {
+  const { status, category, sort } = req.query;
+
+  let filter = { user: req.user.id };
+  let sortBy = { createdAt: -1 };
+
+  if (status) {
+    filter.status = status;
+  }
+  if (category) {
+    filter.category = category;
+  }
+
+  if (sort) {
+    if (sort === 'replied') {
+      sortBy = { 'comments.length': -1 };
+    } else if (sort === 'modified') {
+      sortBy = { updatedAt: -1 };
+    }
+  }
+
   try {
-    const tickets = await Ticket.find({ user: req.user.id }).populate('category', 'name').sort({ createdAt: -1 });
+    const tickets = await Ticket.find(filter).populate('category', 'name').sort(sortBy);
     res.json(tickets);
   } catch (error) {
     console.error(error.message);
@@ -47,11 +67,31 @@ const getTickets = async (req, res) => {
 // @route   GET /api/tickets/all
 // @access  Private/Agent
 const getAllTickets = async (req, res) => {
+  const { status, category, sort } = req.query;
+
+  let filter = {};
+  let sortBy = { createdAt: -1 };
+
+  if (status) {
+    filter.status = status;
+  }
+  if (category) {
+    filter.category = category;
+  }
+
+  if (sort) {
+    if (sort === 'replied') {
+      sortBy = { 'comments.length': -1 };
+    } else if (sort === 'modified') {
+      sortBy = { updatedAt: -1 };
+    }
+  }
+
   try {
-    const tickets = await Ticket.find({})
+    const tickets = await Ticket.find(filter)
       .populate('user', 'name email')
       .populate('category', 'name')
-      .sort({ createdAt: -1 });
+      .sort(sortBy);
 
     res.json(tickets);
   } catch (error) {
@@ -67,7 +107,8 @@ const getTicket = async (req, res) => {
   try {
     const ticket = await Ticket.findById(req.params.id)
       .populate('user', 'name email')
-      .populate('category', 'name');
+      .populate('category', 'name')
+      .populate('comments.user', 'name');
 
     if (!ticket) {
       return res.status(404).json({ msg: 'Ticket not found' });
@@ -125,4 +166,41 @@ const updateTicket = async (req, res) => {
   }
 };
 
-module.exports = { createTicket, getTickets, getTicket, getAllTickets, updateTicket };
+// @desc    Add a comment to a ticket
+// @route   POST /api/tickets/:id/comments
+// @access  Private
+const addComment = async (req, res) => {
+  const { text } = req.body;
+  const { id } = req.params;
+
+  try {
+    const ticket = await Ticket.findById(id);
+
+    if (!ticket) {
+      return res.status(404).json({ msg: 'Ticket not found' });
+    }
+    
+    // Check if the user is authorized to comment on this ticket (owner, agent, or admin)
+    if (
+      ticket.user.toString() !== req.user.id &&
+      req.user.role !== 'Support Agent' &&
+      req.user.role !== 'Admin'
+    ) {
+      return res.status(403).json({ msg: 'User not authorized to comment on this ticket' });
+    }
+
+    const newComment = {
+      text,
+      user: req.user.id,
+    };
+
+    ticket.comments.push(newComment);
+    await ticket.save();
+    res.status(201).json(ticket.comments);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+};
+
+module.exports = { createTicket, getTickets, getTicket, getAllTickets, updateTicket, addComment };
